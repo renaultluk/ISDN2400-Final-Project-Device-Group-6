@@ -6,6 +6,16 @@
 float cruise_speed = 128.0;
 float turn_speed = 128.0;
 
+void bluetooth_parse(String input) {
+  String command;
+  String value_str;
+  float value;
+  byte flag = 0;
+  command = input.substring(0,2);
+  value_str = input.substring(2);
+  value = value_str.toFloat();
+}
+
 void motorDrive(int power, int in1, int in2) {
   if (power >= 0) {
     analogWrite(in2, 0);
@@ -47,5 +57,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
+  if (Serial.available > 0) {
+     String data = Serial.read();
+     bluetooth_parse(data);
+  }
 }
