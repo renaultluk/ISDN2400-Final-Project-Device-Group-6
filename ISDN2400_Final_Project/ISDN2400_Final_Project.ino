@@ -14,6 +14,12 @@ void bluetooth_parse(String input) {
   command = input.substring(0,2);
   value_str = input.substring(2);
   value = value_str.toFloat();
+
+  if (command == "cs") {
+      cruise_speed = value;
+  } else if (command == "an") {
+      
+  }
 }
 
 void motorDrive(int power, int in1, int in2) {
