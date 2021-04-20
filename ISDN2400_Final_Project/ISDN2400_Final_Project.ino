@@ -1,3 +1,5 @@
+#include <ArduinoBLE.h>
+
 #define M1IN1       12
 #define M1IN2       11
 #define M2IN1       10
@@ -6,24 +8,8 @@
 float cruise_speed = 128.0;
 float turn_angle = 0.0;
 float turn_speed = 128.0;
-int[] LED_arr = [2,3,4,5];
-
-void bluetooth_parse(String input) {
-  String command;
-  String value_str;
-  float value;
-  byte flag = 0;
-  command = input.substring(0,2);
-  value_str = input.substring(2);
-  value = value_str.toFloat();
-
-  if (command == "cs") {
-      cruise_speed = value;
-  } else if (command == "an") {
-      turn_angle = value;
-  }
-}
-
+int LED_arr[4] = {2,3,4,5};
+ ss
 void motorDrive(int power, int in1, int in2) {
   if (power >= 0) {
     analogWrite(in2, 0);
@@ -38,7 +24,7 @@ void update_speed(float V, float theta) {
   float V_outer, V_inner;
   float differential;
 
-  differential = V * sin((pi/2) - fabs(theta));
+  differential = V * sin(1.570796327 - fabs(theta));
   V_inner = differential;
   V_outer = 2*V - differential;
   
@@ -77,20 +63,50 @@ void state_update(float V, float theta) {
   }
 }
 
+BLEService ledService("19B10010-E8F2-537E-4F6C-D104768A1214"); 
+
+BLEByteCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1215", BLERead | BLEWrite);
+BLEByteCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1216", BLERead | BLEWrite);
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
+  while (!Serial);
+  
+  if (!BLE.begin()) {
+    Serial.println("starting BLE failed!");
+
+    while (1);
+  }
+
+  BLE.setLocalName("ISDN2400 Group 6");
+  BLE.setDeviceName("ISDN2400 Group 6");
+
+  BLE.setAdvertisedService(ledService);
+
+  ledService.addCharacteristic(speedCharacteristic);
+  ledService.addCharacteristic(angleCharacteristic);
+
+  BLE.addService(ledService);
+
+  speedCharacteristic.writeValue(0);
+  angleCharacteristic.writeValue(0);
+  
+  BLE.advertise();
+
+  Serial.println("Bluetooth device active, waiting for connections...");
+  
   motorDrive(128, M1IN1, M1IN2);
   motorDrive(128, M2IN1, M2IN2);
   delay(100000);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  if (Serial.available() > 0) {
-     String data = Serial.readString();
-     bluetooth_parse(data);
-     update_speed(cruise_speed, turn_angle);
+  BLE.poll();
+  
+  if (speedCharacteristic.written() || angleCharacteristic.written()) {
+    cruise_speed = speedCharacteristic.value();
+    turn_angle = angleCharacteristic.value();
+    update_speed(cruise_speed, turn_angle);
+    state_update(cruise_speed,  turn_angle);
   }
 }
