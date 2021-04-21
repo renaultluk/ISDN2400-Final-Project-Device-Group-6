@@ -9,7 +9,7 @@ float cruise_speed = 128.0;
 float turn_angle = 0.0;
 float turn_speed = 128.0;
 int LED_arr[4] = {2,3,4,5};
- ss
+
 void motorDrive(int power, int in1, int in2) {
   if (power >= 0) {
     analogWrite(in2, 0);
@@ -63,7 +63,7 @@ void state_update(float V, float theta) {
   }
 }
 
-BLEService ledService("19B10010-E8F2-537E-4F6C-D104768A1214"); 
+BLEService ledService("19B10010-E8F2-537E-4F6C-D104768A1214");
 
 BLEByteCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1215", BLERead | BLEWrite);
 BLEByteCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1216", BLERead | BLEWrite);
