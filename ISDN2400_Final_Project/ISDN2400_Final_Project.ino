@@ -65,8 +65,8 @@ void state_update(float V, float theta) {
 
 BLEService ledService("19B10010-E8F2-537E-4F6C-D104768A1214");
 
-BLEByteCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1215", BLERead | BLEWrite);
-BLEByteCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1216", BLERead | BLEWrite);
+BLEFloatCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1215", BLERead | BLEWrite);
+BLEFloatCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1216", BLERead | BLEWrite);
 
 void setup() {
   Serial.begin(9600);
