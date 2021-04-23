@@ -2,8 +2,8 @@
 
 #define M1IN1       12
 #define M1IN2       11
-#define M2IN1       10
-#define M2IN2       9
+#define M2IN1       2
+#define M2IN2       3
 
 float cruise_speed = 128.0;
 float turn_angle = 0.0;
