@@ -8,7 +8,7 @@
 float cruise_speed = 128.0;
 float turn_angle = 0.0;
 float turn_speed = 128.0;
-int LED_arr[4] = {2,3,4,5};
+int LED_arr[4] = {4,5,6,7};
 
 void motorDrive(int power, int in1, int in2) {
   if (power >= 0) {
@@ -65,12 +65,11 @@ void state_update(float V, float theta) {
 
 BLEService ledService("19B10010-E8F2-537E-4F6C-D104768A1214");
 
-BLEFloatCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1215", BLERead | BLEWrite);
-BLEFloatCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1216", BLERead | BLEWrite);
+BLEStringCharacteristic speedCharacteristic("19B10011-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite, 20);
+BLEStringCharacteristic angleCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite, 20);
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial);
   
   if (!BLE.begin()) {
     Serial.println("starting BLE failed!");
@@ -88,8 +87,8 @@ void setup() {
 
   BLE.addService(ledService);
 
-  speedCharacteristic.writeValue(0);
-  angleCharacteristic.writeValue(0);
+  speedCharacteristic.writeValue("0");
+  angleCharacteristic.writeValue("0");
   
   BLE.advertise();
 
@@ -104,8 +103,13 @@ void loop() {
   BLE.poll();
   
   if (speedCharacteristic.written() || angleCharacteristic.written()) {
-    cruise_speed = speedCharacteristic.value();
-    turn_angle = angleCharacteristic.value();
+    String tmpStr1 = speedCharacteristic.value();
+    cruise_speed = tmpStr1.toFloat() - 256;
+    String tmpStr2 = angleCharacteristic.value();
+    turn_angle = tmpStr2.toFloat() - 60;
+    Serial.print(speedCharacteristic.value());
+    Serial.print("\t");
+    Serial.println(angleCharacteristic.value());    
     update_speed(cruise_speed, turn_angle);
     state_update(cruise_speed,  turn_angle);
   }
