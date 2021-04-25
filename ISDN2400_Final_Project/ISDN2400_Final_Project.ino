@@ -96,7 +96,6 @@ void setup() {
   
   motorDrive(128, M1IN1, M1IN2);
   motorDrive(128, M2IN1, M2IN2);
-  delay(100000);
 }
 
 void loop() {
@@ -106,7 +105,7 @@ void loop() {
     String tmpStr1 = speedCharacteristic.value();
     cruise_speed = tmpStr1.toFloat() - 256;
     String tmpStr2 = angleCharacteristic.value();
-    turn_angle = tmpStr2.toFloat() - 60;
+    turn_angle = (tmpStr2.toFloat() - 60)/180*3.141592;
     Serial.print(speedCharacteristic.value());
     Serial.print("\t");
     Serial.println(angleCharacteristic.value());    
