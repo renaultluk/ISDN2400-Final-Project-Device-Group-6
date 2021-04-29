@@ -1,14 +1,14 @@
 #include <ArduinoBLE.h>
 
-#define M1IN1       12
-#define M1IN2       11
-#define M2IN1       2
-#define M2IN2       3
+#define M1IN1       11
+#define M1IN2       10
+#define M2IN1       5
+#define M2IN2       6
 
 float cruise_speed = 128.0;
 float turn_angle = 0.0;
 float turn_speed = 128.0;
-int LED_arr[4] = {4,5,6,7};
+int LED_arr[4] = {A4,A5,A6,A7};
 
 void motorDrive(int power, int in1, int in2) {
   if (power >= 0) {
