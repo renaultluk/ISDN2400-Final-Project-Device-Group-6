@@ -96,6 +96,10 @@ void setup() {
   
   motorDrive(128, M1IN1, M1IN2);
   motorDrive(128, M2IN1, M2IN2);
+
+  for (int i=0; i<4; i++) {
+    pinMode(LED_arr[i], OUTPUT);
+  }
 }
 
 void loop() {
